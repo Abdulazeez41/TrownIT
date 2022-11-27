@@ -5,16 +5,23 @@ pragma solidity ^0.8.2;
 // import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 // import "@openzeppelin/contracts/utils/Counters.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol";
-import "./minter.sol";
+import "./Minter.sol";
+
+interface IERC721MintableBurnable is IERC721 {
+    function safeMint(address, uint256) external;
+
+    function burn(uint256) external;
+}
 
 contract RENTit is Ownable {
     address contractor = payable(address(this));
 
     uint256 public listOfNft = 0;
+    IERC721MintableBurnable nftAddress;
 
     struct NftDetails {
         uint256 tokenId;
-        IERC721 nftAddress;
+        IERC721MintableBurnable nftAddress;
         address payable owner;
         address user;
         uint256 rentPrice;
@@ -25,6 +32,12 @@ contract RENTit is Ownable {
         uint256 timeUnit;
         uint256 expires;
     }
+    
+    constructor(
+        address _nftAddress
+    ) {
+        nftAddress = IERC721MintableBurnable(_nftAddress);
+    }
 
     mapping(uint256 => NftDetails) public nftDetail;
 
@@ -32,8 +45,13 @@ contract RENTit is Ownable {
         require(nftDetail[_index].owner == msg.sender);
         _;
     }
+    
+    function mint(uint256 _uri) public payable {
+        nftAddress.safeMint(msg.sender, _uri);
+    }
 
-    function list(IERC721 _nft, uint256 _tokenId) external {
+    function list(uint256 _tokenId) external {
+        IERC721MintableBurnable _nft;
         _nft.transferFrom(msg.sender, address(this), _tokenId);
         nftDetail[_tokenId] = NftDetails(
             _tokenId,
