@@ -25,7 +25,12 @@ Trown’IT Architecture is seperated into three categories:
 2.) Assets 
 3.) Images
 
-
+## What's next for TrownIT
+* Design of a better UI to ensure smooth User Experience. 
+* Integration of Google map API to the site. 
+* Data accessibility to increase transparency and inform better investment decisions and portfolio management. 
+* Security of users funds 
+* Beta Launch on Nile Testnet.
 
 ## Challenges I ran into
 
